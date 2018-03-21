@@ -71,9 +71,13 @@ typedef enum _fcgi_request_type {
 } fcgi_request_type;
 
 typedef enum _fcgi_protocol_status {
+	//请求的正常结束
 	FCGI_REQUEST_COMPLETE	= 0,
+	//拒绝新请求。这发生在Web服务器通过一条线路向应用发送并发的请求时，后者被设计为每条线路每次处理一个请求
 	FCGI_CANT_MPX_CONN		= 1,
+	//拒绝新请求。这发生在应用用完某些资源时，例如数据库连接
 	FCGI_OVERLOADED			= 2,
+	//拒绝新请求。这发生在Web服务器指定了一个应用不能识别的角色时
 	FCGI_UNKNOWN_ROLE		= 3
 } dcgi_protocol_status;
 

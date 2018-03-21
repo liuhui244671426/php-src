@@ -243,7 +243,7 @@ struct _zend_array {
 	} u;
 	//哈希值计算掩码，等于nTableSize的负值(nTableMask = ~nTableSize + 1)
 	uint32_t          nTableMask;
-	//存储元素数组，指向第一个Bucket
+	//存储元素数组，指向第一个Bucket,数组的有序性正是通过它来保证的
 	Bucket           *arData;
 	//已用Bucket数
 	uint32_t          nNumUsed;

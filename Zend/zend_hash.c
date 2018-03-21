@@ -930,18 +930,24 @@ static void ZEND_FASTCALL zend_hash_do_resize(HashTable *ht)
 	HT_ASSERT_RC1(ht);
 
 	if (ht->nNumUsed > ht->nNumOfElements + (ht->nNumOfElements >> 5)) { /* additional term is there to amortize the cost of compaction */
+		//重建索引
 		zend_hash_rehash(ht);
-	} else if (ht->nTableSize < HT_MAX_SIZE) {	/* Let's double the table size */
+	} else if (ht->nTableSize < HT_MAX_SIZE) {	/* Let's double the table size */ //扩容2倍
 		void *new_data, *old_data = HT_GET_DATA_ADDR(ht);
 		uint32_t nSize = ht->nTableSize + ht->nTableSize;
 		Bucket *old_buckets = ht->arData;
 
 		new_data = pemalloc(HT_SIZE_EX(nSize, -nSize), GC_FLAGS(ht) & IS_ARRAY_PERSISTENT);
 		ht->nTableSize = nSize;
+		//nTableSize负值
 		ht->nTableMask = -ht->nTableSize;
+		//将arData指针偏移到Bucket数组起始位置
 		HT_SET_DATA_ADDR(ht, new_data);
+		//将旧的Bucket数组拷到新空间
 		memcpy(ht->arData, old_buckets, sizeof(Bucket) * ht->nNumUsed);
+		//释放旧空间
 		pefree(old_data, GC_FLAGS(ht) & IS_ARRAY_PERSISTENT);
+		//重建索引
 		zend_hash_rehash(ht);
 	} else {
 		zend_error_noreturn(E_ERROR, "Possible integer overflow in memory allocation (%u * %zu + %zu)", ht->nTableSize * 2, sizeof(Bucket) + sizeof(uint32_t), sizeof(Bucket));

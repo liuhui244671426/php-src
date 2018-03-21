@@ -226,7 +226,7 @@ typedef struct _Bucket {
 	zend_ulong        h;                /* hash value (or numeric index)   */
 	zend_string      *key;              /* string key or NULL for numerics */
 } Bucket;
-
+//定义数组的结构体是 hashtable
 typedef struct _zend_array HashTable;
 
 struct _zend_array {
@@ -241,12 +241,19 @@ struct _zend_array {
 		} v;
 		uint32_t flags;
 	} u;
+	//哈希值计算掩码，等于nTableSize的负值(nTableMask = ~nTableSize + 1)
 	uint32_t          nTableMask;
+	//存储元素数组，指向第一个Bucket
 	Bucket           *arData;
+	//已用Bucket数
 	uint32_t          nNumUsed;
+	//哈希表已有元素数
 	uint32_t          nNumOfElements;
+	//哈希表总大小，为2的n次方
 	uint32_t          nTableSize;
+	//内部指针
 	uint32_t          nInternalPointer;
+	//下一个可用的数值索引,如:arr[] = 1;arr["a"] = 2;arr[] = 3;  则nNextFreeElement = 2;
 	zend_long         nNextFreeElement;
 	dtor_func_t       pDestructor;
 };

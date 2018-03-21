@@ -216,18 +216,25 @@ SAPI_API void sapi_terminate_process(void);
 END_EXTERN_C()
 
 struct _sapi_module_struct {
+	//名称
 	char *name;
+	//更好理解的名称
 	char *pretty_name;
-
+	//启动函数
 	int (*startup)(struct _sapi_module_struct *sapi_module);
+	//关闭函数
 	int (*shutdown)(struct _sapi_module_struct *sapi_module);
-
+	//激活
 	int (*activate)(void);
+	//停用
 	int (*deactivate)(void);
 
 	size_t (*ub_write)(const char *str, size_t str_length);
+	//不缓存的写操作
 	void (*flush)(void *server_context);
+	//get uid
 	zend_stat_t *(*get_stat)(void);
+	//get env
 	char *(*getenv)(char *name, size_t name_len);
 
 	void (*sapi_error)(int type, const char *error_msg, ...) ZEND_ATTRIBUTE_FORMAT(printf, 2, 3);
@@ -243,7 +250,7 @@ struct _sapi_module_struct {
 	void (*log_message)(char *message, int syslog_type_int);
 	double (*get_request_time)(void);
 	void (*terminate_process)(void);
-
+	//覆盖的ini路径
 	char *php_ini_path_override;
 
 	void (*default_post_reader)(void);

@@ -133,7 +133,10 @@ static int is_impersonate = 0;
 #endif
 
 #include "fastcgi.h"
-
+//关于上面的xxB1和xxB0的协议说明：当两个相邻的结构组件除了后缀“B1”和“B0”之外命名相同时，
+//它表示这两个组件可视为估值为B1<<8 + B0的单个数字。该单个数字的名字是这些组件减去后缀的名字。
+//这个约定归纳了一个由超过两个字节表示的数字的处理方式。
+//协议头中requestId和contentLength表示的最大值就是 65535
 typedef struct _fcgi_header {
 	unsigned char version;
 	unsigned char type;

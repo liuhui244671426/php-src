@@ -159,7 +159,7 @@ typedef uintptr_t zend_type;
 typedef union _zend_value {
 	zend_long         lval;				/* long value */
 	double            dval;				/* double value */
-	zend_refcounted  *counted;
+	zend_refcounted  *counted;          //引用计数
 	zend_string      *str;
 	zend_array       *arr;
 	zend_object      *obj;
@@ -175,14 +175,14 @@ typedef union _zend_value {
 		uint32_t w2;
 	} ww;
 } zend_value;
-
+//变量管理解决方案: 引用计数+写时复制
 struct _zval_struct {
 	zend_value        value;			/* value */
 	union {
 		struct {
 			ZEND_ENDIAN_LOHI_3(
 				zend_uchar    type,			/* active type */
-				zend_uchar    type_flags,
+				zend_uchar    type_flags,  //类型掩码，不同的类型会有不同的几种属性，内存管理会用到
 				union {
 					uint16_t  call_info;    /* call info for EX(This) */
 					uint16_t  extra;        /* not further specified */
@@ -211,7 +211,7 @@ typedef struct _zend_refcounted_h {
 } zend_refcounted_h;
 
 struct _zend_refcounted {
-	zend_refcounted_h gc;
+	zend_refcounted_h gc; //垃圾回收,引用计数
 };
 
 struct _zend_string {

@@ -237,10 +237,10 @@ struct _zend_mm_heap {
 	zend_mm_storage   *storage;
 #endif
 #if ZEND_MM_STAT
-	size_t             size;                    /* current memory usage */
-	size_t             peak;                    /* peak memory usage */
+	size_t             size;                    /* current memory usage 当前已用内存数 */
+	size_t             peak;                    /* peak memory usage 内存单次申请的峰值 */
 #endif
-	zend_mm_free_slot *free_slot[ZEND_MM_BINS]; /* free lists for small sizes */
+	zend_mm_free_slot *free_slot[ZEND_MM_BINS]; /* free lists for small sizes 小内存分配的可用位置链表，ZEND_MM_BINS等于30，即此数组表示的是各种大小内存对应的链表头部 */
 #if ZEND_MM_STAT || ZEND_MM_LIMIT
 	size_t             real_size;               /* current size of allocated pages */
 #endif
@@ -252,14 +252,14 @@ struct _zend_mm_heap {
 	int                overflow;                /* memory overflow flag */
 #endif
 
-	zend_mm_huge_list *huge_list;               /* list of huge allocated blocks */
+	zend_mm_huge_list *huge_list;               /* list of huge allocated blocks 大内存链表*/
 
-	zend_mm_chunk     *main_chunk;
-	zend_mm_chunk     *cached_chunks;			/* list of unused chunks */
-	int                chunks_count;			/* number of alocated chunks */
-	int                peak_chunks_count;		/* peak number of allocated chunks for current request */
-	int                cached_chunks_count;		/* number of cached chunks */
-	double             avg_chunks_count;		/* average number of chunks allocated per request */
+	zend_mm_chunk     *main_chunk;				/* 指向chunk链表头部 */
+	zend_mm_chunk     *cached_chunks;			/* list of unused chunks 缓存的chunk链表 */
+	int                chunks_count;			/* number of alocated chunks 已分配chunk数 */
+	int                peak_chunks_count;		/* peak number of allocated chunks for current request 当前request使用chunk峰值 */
+	int                cached_chunks_count;		/* number of cached chunks 缓存的chunk数 */
+	double             avg_chunks_count;		/* average number of chunks allocated per request chunk使用均值 */
 	int                last_chunks_delete_boundary; /* numer of chunks after last deletion */
 	int                last_chunks_delete_count;    /* number of deletion over the last boundary */
 #if ZEND_MM_CUSTOM
@@ -282,11 +282,11 @@ struct _zend_mm_chunk {
 	zend_mm_heap      *heap;
 	zend_mm_chunk     *next;
 	zend_mm_chunk     *prev;
-	uint32_t           free_pages;				/* number of free pages */
+	uint32_t           free_pages;				/* number of free pages 当前chunk的剩余page数 */
 	uint32_t           free_tail;               /* number of free pages at the end of chunk */
 	uint32_t           num;
 	char               reserve[64 - (sizeof(void*) * 3 + sizeof(uint32_t) * 3)];
-	zend_mm_heap       heap_slot;               /* used only in main chunk */
+	zend_mm_heap       heap_slot;               /* used only in main chunk heap结构，只有主chunk会用到*/
 	zend_mm_page_map   free_map;                /* 512 bits or 64 bytes */
 	zend_mm_page_info  map[ZEND_MM_PAGES];      /* 2 KB = 512 * 4 */
 };
@@ -302,7 +302,7 @@ struct _zend_mm_page {
 struct _zend_mm_bin {
 	char               bytes[ZEND_MM_PAGE_SIZE * 8];
 };
-
+//按固定大小切好的small内存槽
 struct _zend_mm_free_slot {
 	zend_mm_free_slot *next_free_slot;
 };

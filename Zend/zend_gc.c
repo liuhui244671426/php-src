@@ -182,24 +182,24 @@
 ZEND_API int (*gc_collect_cycles)(void);
 
 typedef struct _gc_root_buffer {
-	zend_refcounted  *ref;
+	zend_refcounted  *ref; /* 每个 zend_value 的 gc 信息 */
 } gc_root_buffer;
 
 typedef struct _zend_gc_globals {
-	zend_bool         gc_enabled;
+	zend_bool         gc_enabled; /* 是否启动 GC */
 	zend_bool         gc_active;        /* GC currently running, forbid nested GC */
 	zend_bool         gc_protected;     /* GC protected, forbid root additions */
-	zend_bool         gc_full;
+	zend_bool         gc_full; /* 缓存区是否已满 */
 
 	gc_root_buffer   *buf;				/* preallocated arrays of buffers   */
 	uint32_t          unused;			/* linked list of unused buffers    */
-	uint32_t          first_unused;		/* first unused buffer              */
+	uint32_t          first_unused;		/* first unused buffer   指向buf中第一个可用的节点*/
 	uint32_t          gc_threshold;     /* GC collection threshold          */
 	uint32_t          buf_size;			/* size of the GC buffer            */
 	uint32_t          num_roots;		/* number of roots in GC buffer     */
 
-	uint32_t gc_runs;
-	uint32_t collected;
+	uint32_t gc_runs; /* 统计 GC 运行次数 */
+	uint32_t collected; /* 统计已回收的垃圾数 */
 
 #if GC_BENCH
 	uint32_t root_buf_length;

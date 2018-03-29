@@ -204,7 +204,7 @@ struct _zval_struct {
 };
 
 typedef struct _zend_refcounted_h {
-	uint32_t         refcount;			/* reference counter 32-bit */
+	uint32_t         refcount;			/* reference counter 32-bit 记录 zend_value的引用数 */
 	union {
 		uint32_t type_info;
 	} u;
@@ -494,7 +494,7 @@ static zend_always_inline uint32_t zval_gc_info(uint32_t gc_type_info) {
 #define GC_IMMUTABLE                (1<<6) /* can't be canged in place */
 #define GC_PERSISTENT               (1<<7) /* allocated using malloc */
 #define GC_PERSISTENT_LOCAL         (1<<8) /* persistent, but thread-local */
-
+/* 目前只有这两种垃圾回收类型 */
 #define GC_ARRAY					(IS_ARRAY          | (GC_COLLECTABLE << GC_FLAGS_SHIFT))
 #define GC_OBJECT					(IS_OBJECT         | (GC_COLLECTABLE << GC_FLAGS_SHIFT))
 

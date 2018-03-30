@@ -147,7 +147,7 @@ PHPAPI int php_load_extension(char *filename, int type, int start_now)
 	} else {
 		return FAILURE; /* Not full path given or extension_dir is not set */
 	}
-
+	//调用dlopen打开指定的动态连接库文件：xx.so
 	handle = php_load_shlib(libpath, &err1);
 	if (!handle) {
 		/* Now, consider 'filename' as extension name and build file name */
@@ -174,7 +174,7 @@ PHPAPI int php_load_extension(char *filename, int type, int start_now)
 	}
 
 	efree(libpath);
-
+	//调用dlsym获取get_module的函数指针
 	get_module = (zend_module_entry *(*)(void)) DL_FETCH_SYMBOL(handle, "get_module");
 
 	/* Some OS prepend _ to symbol names while their dynamic linker
@@ -195,7 +195,9 @@ PHPAPI int php_load_extension(char *filename, int type, int start_now)
 		php_error_docref(NULL, error_type, "Invalid library (maybe not a PHP library) '%s'", filename);
 		return FAILURE;
 	}
+	//调用扩展的get_module()函数
 	module_entry = get_module();
+	//检查扩展使用的zend api是否与当前php版本一致
 	if (module_entry->zend_api != ZEND_MODULE_API_NO) {
 			php_error_docref(NULL, error_type,
 					"%s: Unable to initialize module\n"
@@ -217,6 +219,7 @@ PHPAPI int php_load_extension(char *filename, int type, int start_now)
 		return FAILURE;
 	}
 	module_entry->type = type;
+	//为扩展编号
 	module_entry->module_number = zend_next_free_module();
 	module_entry->handle = handle;
 

@@ -78,13 +78,13 @@ struct _zend_module_entry {
 	const struct _zend_ini_entry *ini_entry;
 	const struct _zend_module_dep *deps;
 	const char *name;
-	const struct _zend_function_entry *functions;
-	int (*module_startup_func)(INIT_FUNC_ARGS);
-	int (*module_shutdown_func)(SHUTDOWN_FUNC_ARGS);
-	int (*request_startup_func)(INIT_FUNC_ARGS);
-	int (*request_shutdown_func)(SHUTDOWN_FUNC_ARGS);
-	void (*info_func)(ZEND_MODULE_INFO_FUNC_ARGS);
-	const char *version;
+	const struct _zend_function_entry *functions;//扩展提供的内部函数列表
+	int (*module_startup_func)(INIT_FUNC_ARGS);//扩展初始化回调函数，PHP_MINIT_FUNCTION或ZEND_MINIT_FUNCTION定义的函数
+	int (*module_shutdown_func)(SHUTDOWN_FUNC_ARGS);//扩展关闭时回调函数
+	int (*request_startup_func)(INIT_FUNC_ARGS);//请求开始前回调函数
+	int (*request_shutdown_func)(SHUTDOWN_FUNC_ARGS);//请求结束时回调函数
+	void (*info_func)(ZEND_MODULE_INFO_FUNC_ARGS);//php_info展示的扩展信息处理函数
+	const char *version;//版本
 	size_t globals_size;
 #ifdef ZTS
 	ts_rsrc_id* globals_id_ptr;
@@ -97,7 +97,7 @@ struct _zend_module_entry {
 	int module_started;
 	unsigned char type;
 	void *handle;
-	int module_number;
+	int module_number;//扩展的唯一编号
 	const char *build_id;
 };
 

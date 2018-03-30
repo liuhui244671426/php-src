@@ -343,7 +343,7 @@ static void php_ini_parser_cb(zval *arg1, zval *arg2, zval *arg3, int callback_t
 static void php_load_php_extension_cb(void *arg)
 {
 #ifdef HAVE_LIBDL
-	php_load_extension(*((char **) arg), MODULE_PERSISTENT, 0);
+	php_load_extension(*((char **) arg), MODULE_PERSISTENT, 0); //加载扩展
 #endif
 }
 /* }}} */
@@ -771,7 +771,9 @@ int php_shutdown_config(void)
  */
 void php_ini_register_extensions(void)
 {
+	//注册 zend 扩展
 	zend_llist_apply(&extension_lists.engine, php_load_zend_extension_cb);
+	//注册 php 扩展
 	zend_llist_apply(&extension_lists.functions, php_load_php_extension_cb);
 
 	zend_llist_destroy(&extension_lists.engine);

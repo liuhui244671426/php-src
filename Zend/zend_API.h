@@ -32,7 +32,7 @@
 
 
 BEGIN_EXTERN_C()
-
+//zend 函数实体
 typedef struct _zend_function_entry {
 	const char *fname;
 	zif_handler handler;

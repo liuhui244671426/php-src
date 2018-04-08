@@ -100,7 +100,7 @@ void fpm_request_reading_headers() /* {{{ */
 	fpm_scoreboard_update(-1, 1, 0, 0, 1, 0, 0, FPM_SCOREBOARD_ACTION_INC, NULL);
 }
 /* }}} */
-
+//获取请求信息阶段,此阶段是将请求的method、query stirng、request uri等信息保存到各worker进程的fpm_scoreboard_proc_s结构中，此操作需要加锁，因为master进程也会操作此结构
 void fpm_request_info() /* {{{ */
 {
 	struct fpm_scoreboard_proc_s *proc;

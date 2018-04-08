@@ -304,7 +304,7 @@ int fpm_event_support_edge_trigger() /* {{{ */
 	return module ? module->support_edge_trigger : 0;
 }
 /* }}} */
-
+//启动master的事件管理
 int fpm_event_init_main() /* {{{ */
 {
 	struct fpm_worker_pool_s *wp;
@@ -342,7 +342,7 @@ int fpm_event_init_main() /* {{{ */
 	return 0;
 }
 /* }}} */
-
+//event循环
 void fpm_event_loop(int err) /* {{{ */
 {
 	static struct fpm_event_s signal_fd_event;

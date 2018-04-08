@@ -357,7 +357,7 @@ static void fpm_parent_resources_use(struct fpm_child_s *child) /* {{{ */
 	fpm_child_link(child);
 }
 /* }}} */
-
+//fork 子进程
 int fpm_children_make(struct fpm_worker_pool_s *wp, int in_event_loop, int nb_to_spawn, int is_debug) /* {{{ */
 {
 	pid_t pid;

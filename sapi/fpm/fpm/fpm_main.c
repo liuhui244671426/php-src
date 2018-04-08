@@ -1904,7 +1904,12 @@ consult the installation file that came with this distribution, or visit \n\
 
 	/* library is already initialized, now init our request */
 	request = fpm_init_request(fcgi_fd);
-
+	//请求处理步骤:
+	//(1)等待请求,worker进程阻塞在fcgi_accept_request()等待请求
+	//(2)解析请求,fastcgi请求到达后被worker接收，然后开始接收并解析请求数据，直到request数据完全到达
+	//(3)请求初始化,执行php_request_startup()，此阶段会调用每个扩展的：PHP_RINIT_FUNCTION()
+	//(4)编译、执行,由php_execute_script()完成PHP脚本的编译、执行
+	//(5)关闭请求,请求完成后执行php_request_shutdown()，此阶段会调用每个扩展的：PHP_RSHUTDOWN_FUNCTION()，然后进入步骤(1)等待下一个请求
 	zend_first_try {
 		while (EXPECTED(fcgi_accept_request(request) >= 0)) {
 			char *primary_script = NULL;
@@ -1977,7 +1982,7 @@ consult the installation file that came with this distribution, or visit \n\
 			}
 
 			fpm_request_executing();
-
+			//编译、执行PHP脚本
 			php_execute_script(&file_handle);
 
 fastcgi_request_done:
@@ -2005,7 +2010,7 @@ fastcgi_request_done:
 
 			efree(SG(request_info).path_translated);
 			SG(request_info).path_translated = NULL;
-
+			//请求结束
 			php_request_shutdown((void *) 0);
 
 			requests++;
@@ -2032,6 +2037,7 @@ fastcgi_request_done:
 out:
 
 	SG(server_context) = NULL;
+	//worker进程退出
 	php_module_shutdown();
 
 	if (parent) {

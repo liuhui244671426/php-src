@@ -100,7 +100,7 @@ int fpm_run(int *max_requests) /* {{{ */
 	/* create initial children in all pools */
 	for (wp = fpm_worker_all_pools; wp; wp = wp->next) {
 		int is_parent;
-
+		//调用fpm_children_make() fork子进程
 		is_parent = fpm_children_create_initial(wp);
 
 		if (!is_parent) {
@@ -113,7 +113,7 @@ int fpm_run(int *max_requests) /* {{{ */
 			fpm_event_loop(1);
 		}
 	}
-
+	//master进程将进入event循环，不再往下走
 	/* run event loop forever */
 	fpm_event_loop(0);
 
@@ -122,7 +122,7 @@ run_child: /* only workers reach this point */
 	fpm_cleanups_run(FPM_CLEANUP_CHILD);
 
 	*max_requests = fpm_globals.max_requests;
-	return fpm_globals.listening_socket;
+	return fpm_globals.listening_socket;//返回监听的套接字
 }
 /* }}} */
 

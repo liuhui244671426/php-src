@@ -42,7 +42,7 @@ struct fpm_globals_s fpm_globals = {
 	.force_stderr = 0,
 	.send_config_pipe = {0, 0},
 };
-
+//初始化 fpm
 int fpm_init(int argc, char **argv, char *config, char *prefix, char *pid, int test_conf, int run_as_root, int force_daemon, int force_stderr) /* {{{ */
 {
 	fpm_globals.argc = argc;
@@ -54,7 +54,10 @@ int fpm_init(int argc, char **argv, char *config, char *prefix, char *pid, int t
 	fpm_globals.pid = pid;
 	fpm_globals.run_as_root = run_as_root;
 	fpm_globals.force_stderr = force_stderr;
-
+	/*fpm_conf_init_main():解析php-fpm.conf配置文件，分配worker pool内存结构并保存到全局变量中fpm_worker_all_pools，各worker pool配置解析到fpm_worker_pool_s->config中
+	 * */
+	/*fpm_scoreboard_init_main(): 分配用于记录worker进程运行信息的共享内存，按照worker pool的最大worker进程数分配，每个worker pool分配一个fpm_scoreboard_s结构，pool下对应的每个worker进程分配一个fpm_scoreboard_proc_s结构
+	 * */
 	if (0 > fpm_php_init_main()           ||
 	    0 > fpm_stdio_init_main()         ||
 	    0 > fpm_conf_init_main(test_conf, force_daemon) ||

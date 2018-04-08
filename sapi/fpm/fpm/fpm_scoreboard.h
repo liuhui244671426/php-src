@@ -26,7 +26,7 @@ struct fpm_scoreboard_proc_s {
 	time_t start_epoch;
 	pid_t pid;
 	unsigned long requests;
-	enum fpm_request_stage_e request_stage;
+	enum fpm_request_stage_e request_stage;//请求处理的阶段数据存这里
 	struct timeval accepted;
 	struct timeval duration;
 	time_t accepted_epoch;

@@ -147,7 +147,7 @@ void fpm_request_info() /* {{{ */
 		strlcpy(proc->script_filename, script_filename, sizeof(proc->script_filename));
 	}
 
-	fpm_scoreboard_proc_release(proc);
+	fpm_scoreboard_proc_release(proc);//这里加锁
 }
 /* }}} */
 

@@ -26,7 +26,7 @@ struct fpm_scoreboard_proc_s {
 	time_t start_epoch;
 	pid_t pid;
 	unsigned long requests;
-	enum fpm_request_stage_e request_stage;//请求处理的阶段数据存这里
+	enum fpm_request_stage_e request_stage;//worker处理到各个阶段时将会把当前阶段更新到这里，master进程正是通过这个标识判断worker进程是否空闲的
 	struct timeval accepted;
 	struct timeval duration;
 	time_t accepted_epoch;

@@ -20,7 +20,7 @@ int fpm_children_make(struct fpm_worker_pool_s *wp, int in_event_loop, int nb_to
 struct fpm_child_s;
 
 struct fpm_child_s {
-	struct fpm_child_s *prev, *next;
+	struct fpm_child_s *prev, *next;//链表结构
 	struct timeval started;
 	struct fpm_worker_pool_s *wp;
 	struct fpm_event_s ev_stdout, ev_stderr;

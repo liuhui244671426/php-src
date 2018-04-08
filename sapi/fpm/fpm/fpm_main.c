@@ -1564,7 +1564,7 @@ static zend_module_entry cgi_module_entry = {
 	NO_VERSION_YET,
 	STANDARD_MODULE_PROPERTIES
 };
-
+//fpm启动流程
 /* {{{ main
  */
 int main(int argc, char *argv[])
@@ -1617,7 +1617,7 @@ int main(int argc, char *argv[])
 #endif
 
 	zend_signal_startup();
-
+	//注册SAPI:将全局变量sapi_module设置为cgi_sapi_module
 	sapi_startup(&cgi_sapi_module);
 	cgi_sapi_module.php_ini_path_override = NULL;
 	cgi_sapi_module.php_ini_ignore_cwd = 1;
@@ -1866,7 +1866,7 @@ consult the installation file that came with this distribution, or visit \n\
 	old_rc_debug = zend_rc_debug;
 	zend_rc_debug = 0;
 #endif
-
+	//初始化fpm
 	ret = fpm_init(argc, argv, fpm_config ? fpm_config : CGIG(fpm_config), fpm_prefix, fpm_pid, test_conf, php_allow_to_run_as_root, force_daemon, force_stderr);
 
 #if ZEND_RC_DEBUG
@@ -1891,7 +1891,7 @@ consult the installation file that came with this distribution, or visit \n\
 		close(fpm_globals.send_config_pipe[1]);
 	}
 	fpm_is_running = 1;
-
+	//后面都是worker进程的操作，master进程不会走到下面
 	fcgi_fd = fpm_run(&max_requests);
 	parent = 0;
 

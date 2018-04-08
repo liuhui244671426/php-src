@@ -1685,7 +1685,9 @@ static void fpm_conf_dump() /* {{{ */
 	}
 }
 /* }}} */
-
+/*
+ * 解析php-fpm.conf配置文件，分配worker pool内存结构并保存到全局变量中：fpm_worker_all_pools，各worker pool配置解析到fpm_worker_pool_s->config中。
+ * */
 int fpm_conf_init_main(int test_conf, int force_daemon) /* {{{ */
 {
 	int ret;

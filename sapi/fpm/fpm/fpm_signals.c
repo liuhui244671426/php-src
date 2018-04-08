@@ -203,7 +203,10 @@ int fpm_signals_init_main() /* {{{ */
 	//注册信号处理handler
 	act.sa_handler = sig_handler;
 	sigfillset(&act.sa_mask);
-
+	//SIGINT/SIGTERM/SIGQUIT: 退出fpm，在master收到退出信号后将向所有的worker进程发送退出信号，然后master退出
+	//SIGUSR1: 重新加载日志文件，生产环境中通常会对日志进行切割，切割后会生成一个新的日志文件，如果fpm不重新加载将无法继续写入日志，这个时候就需要向master发送一个USR1的信号
+	//SIGUSR2: 重启fpm，首先master也是会向所有的worker进程发送退出信号，然后master会调用execvp()重新启动fpm，最后旧的master退出
+	//SIGCHLD: 这个信号是子进程退出时操作系统发送给父进程的，子进程退出时，内核将子进程置为僵尸状态，这个进程称为僵尸进程，它只保留最小的一些内核数据结构，以便父进程查询子进程的退出状态，只有当父进程调用wait或者waitpid函数查询子进程退出状态后子进程才告终止，fpm中当worker进程因为异常原因(比如coredump了)退出而非master主动杀掉时master将受到此信号，这个时候父进程将调用waitpid()查下子进程的退出，然后检查下是不是需要重新fork新的worker
 	if (0 > sigaction(SIGTERM,  &act, 0) ||
 	    0 > sigaction(SIGINT,   &act, 0) ||
 	    0 > sigaction(SIGUSR1,  &act, 0) ||

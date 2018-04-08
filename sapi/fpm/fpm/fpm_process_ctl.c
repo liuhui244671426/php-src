@@ -300,6 +300,7 @@ static void fpm_pctl_check_request_timeout(struct timeval *now) /* {{{ */
 
 		if (terminate_timeout || slowlog_timeout) {
 			for (child = wp->children; child; child = child->next) {
+				//检查当前当前worker处理的请求是否超时
 				fpm_request_check_timed_out(child, now, terminate_timeout, slowlog_timeout);
 			}
 		}
@@ -313,15 +314,16 @@ static void fpm_pctl_perform_idle_server_maintenance(struct timeval *now) /* {{{
 
 	for (wp = fpm_worker_all_pools; wp; wp = wp->next) {
 		struct fpm_child_s *child;
-		struct fpm_child_s *last_idle_child = NULL;
-		int idle = 0;
-		int active = 0;
+		struct fpm_child_s *last_idle_child = NULL;//空闲时间最久的worker
+		int idle = 0;//空闲worker数
+		int active = 0;//忙碌worker数
 		int children_to_fork;
 		unsigned cur_lq = 0;
 
 		if (wp->config == NULL) continue;
 
 		for (child = wp->children; child; child = child->next) {
+			//根据worker进程的fpm_scoreboard_proc_s->request_stage判断
 			if (fpm_request_is_idle(child)) {
 				if (last_idle_child == NULL) {
 					last_idle_child = child;
@@ -366,6 +368,7 @@ static void fpm_pctl_perform_idle_server_maintenance(struct timeval *now) /* {{{
 			fpm_request_last_activity(last_idle_child, &last);
 			fpm_clock_get(&now);
 			if (last.tv_sec < now.tv_sec - wp->config->pm_process_idle_timeout) {
+				//如果空闲时间最长的worker空闲时间超过了process_idle_timeout则杀掉该worker
 				last_idle_child->idle_kill = 1;
 				fpm_pctl_kill(last_idle_child->pid, FPM_PCTL_QUIT);
 			}
@@ -379,6 +382,7 @@ static void fpm_pctl_perform_idle_server_maintenance(struct timeval *now) /* {{{
 		zlog(ZLOG_DEBUG, "[pool %s] currently %d active children, %d spare children, %d running children. Spawning rate %d", wp->config->name, active, idle, wp->running_children, wp->idle_spawn_rate);
 
 		if (idle > wp->config->pm_max_spare_servers && last_idle_child) {
+			//空闲worker太多了，杀掉
 			last_idle_child->idle_kill = 1;
 			fpm_pctl_kill(last_idle_child->pid, FPM_PCTL_QUIT);
 			wp->idle_spawn_rate = 1;
@@ -386,6 +390,7 @@ static void fpm_pctl_perform_idle_server_maintenance(struct timeval *now) /* {{{
 		}
 
 		if (idle < wp->config->pm_min_spare_servers) {
+			//空闲worker太少了，如果总worker数未达到max数则fork
 			if (wp->running_children >= wp->config->pm_max_children) {
 				if (!wp->warn_max_children) {
 					fpm_scoreboard_update(0, 0, 0, 0, 0, 1, 0, FPM_SCOREBOARD_ACTION_INC, wp->scoreboard);

@@ -22,7 +22,7 @@ struct fpm_event_s {
 	int index;                /* index of the fd in the ufds array */
 	short which;              /* type of event */
 };
-
+//事件队列
 typedef struct fpm_event_queue_s {
 	struct fpm_event_queue_s *prev;
 	struct fpm_event_queue_s *next;

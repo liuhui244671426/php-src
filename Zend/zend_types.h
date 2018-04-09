@@ -165,7 +165,7 @@ typedef union _zend_value {
 	zend_object      *obj;
 	zend_resource    *res;
 	zend_reference   *ref;
-	zend_ast_ref     *ast;
+	zend_ast_ref     *ast;//下面几个都是内核使用的value
 	zval             *zv;
 	void             *ptr;
 	zend_class_entry *ce;
@@ -181,17 +181,17 @@ struct _zval_struct {
 	union {
 		struct {
 			ZEND_ENDIAN_LOHI_3(
-				zend_uchar    type,			/* active type */
+				zend_uchar    type,			/* active type 区分变量类型*/
 				zend_uchar    type_flags,  //类型掩码，不同的类型会有不同的几种属性，内存管理会用到
 				union {
 					uint16_t  call_info;    /* call info for EX(This) */
 					uint16_t  extra;        /* not further specified */
 				} u)
 		} v;
-		uint32_t type_info;
+		uint32_t type_info;//上面4个值的组合值，可以直接根据type_info取到4个对应位置的值
 	} u1;
 	union {
-		uint32_t     next;                 /* hash collision chain */
+		uint32_t     next;                 /* hash collision chain 哈希表中解决哈希冲突时用到 */
 		uint32_t     opline_num;           /* opline number (for FAST_CALL) */
 		uint32_t     lineno;               /* line number (for ast nodes) */
 		uint32_t     num_args;             /* arguments number for EX(This) */
@@ -215,9 +215,9 @@ struct _zend_refcounted {
 };
 
 struct _zend_string {
-	zend_refcounted_h gc;
+	zend_refcounted_h gc; //变量引用信息
 	zend_ulong        h;                /* hash value */
-	size_t            len;
+	size_t            len;//通过这个保证二进制安全
 	char              val[1];
 };
 //hash 中存储的元素

@@ -185,6 +185,7 @@ typedef struct _gc_root_buffer {
 	zend_refcounted  *ref; /* 每个 zend_value 的 gc 信息 */
 } gc_root_buffer;
 
+//垃圾回收内部实现
 typedef struct _zend_gc_globals {
 	zend_bool         gc_enabled; /* 是否启动 GC */
 	zend_bool         gc_active;        /* GC currently running, forbid nested GC */

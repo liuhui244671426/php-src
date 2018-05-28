@@ -1891,6 +1891,7 @@ consult the installation file that came with this distribution, or visit \n\
 	request = fpm_init_request(fcgi_fd);
 
 	zend_first_try {
+		//fpm worker accept
 		while (EXPECTED(fcgi_accept_request(request) >= 0)) {
 			char *primary_script = NULL;
 			request_body_fd = -1;

@@ -286,4 +286,4 @@ win32/wsyslog.h
 .idea/
 cmake-build-debug/
 .gitignore
-ext/mytest/
+ext/say/

@@ -396,23 +396,23 @@ int fpm_children_make(struct fpm_worker_pool_s *wp, int in_event_loop, int nb_to
 		if (!child) {
 			return 2;
 		}
-
+		//fork 子进程
 		pid = fork();
 
 		switch (pid) {
-
+			//子进程
 			case 0 :
 				fpm_child_resources_use(child);
 				fpm_globals.is_child = 1;
 				fpm_child_init(wp);
 				return 0;
-
+			//失败
 			case -1 :
 				zlog(ZLOG_SYSERROR, "fork() failed");
 
 				fpm_resources_discard(child);
 				return 2;
-
+			//父
 			default :
 				child->pid = pid;
 				fpm_clock_get(&child->started);

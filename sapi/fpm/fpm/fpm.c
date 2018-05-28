@@ -42,12 +42,14 @@ struct fpm_globals_s fpm_globals = {
 	.force_stderr = 0,
 	.send_config_pipe = {0, 0},
 };
-
+//fpm 初始化
+//argv 是指针的指针
 int fpm_init(int argc, char **argv, char *config, char *prefix, char *pid, int test_conf, int run_as_root, int force_daemon, int force_stderr) /* {{{ */
 {
 	fpm_globals.argc = argc;
 	fpm_globals.argv = argv;
 	if (config && *config) {
+		//strdup 拷贝串的副本
 		fpm_globals.config = strdup(config);
 	}
 	fpm_globals.prefix = prefix;
@@ -87,7 +89,7 @@ int fpm_init(int argc, char **argv, char *config, char *prefix, char *pid, int t
 	return 0;
 }
 /* }}} */
-
+// fpm 运行
 /*	children: return listening socket
 	parent: never return */
 int fpm_run(int *max_requests) /* {{{ */

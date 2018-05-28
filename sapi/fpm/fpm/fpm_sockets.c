@@ -172,7 +172,7 @@ static int fpm_sockets_new_listening_socket(struct fpm_worker_pool_s *wp, struct
 		zlog(ZLOG_SYSERROR, "failed to create new listening socket: socket()");
 		return -1;
 	}
-
+	//复用端口
 	if (0 > setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &flags, sizeof(flags))) {
 		zlog(ZLOG_WARNING, "failed to change socket attribute");
 	}
@@ -356,7 +356,7 @@ int fpm_sockets_init_main() /* {{{ */
 			inherited = 0;
 		}
 	}
-
+	//监听
 	/* create all required sockets */
 	for (wp = fpm_worker_all_pools; wp; wp = wp->next) {
 		switch (wp->listen_address_domain) {
@@ -377,6 +377,7 @@ int fpm_sockets_init_main() /* {{{ */
 		}
 
 	if (wp->listen_address_domain == FPM_AF_INET && fpm_socket_get_listening_queue(wp->listening_socket, NULL, &lq_len) >= 0) {
+		//更新 fpm 计分板
 			fpm_scoreboard_update(-1, -1, -1, (int)lq_len, -1, -1, 0, FPM_SCOREBOARD_ACTION_SET, wp->scoreboard);
 		}
 	}

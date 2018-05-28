@@ -1406,7 +1406,7 @@ int fcgi_accept_request(fcgi_request *req)
 					socklen_t len = sizeof(sa);
 
 					req->hook.on_accept();
-
+					//处理惊群
 					FCGI_LOCK(req->listen_socket);
 					req->fd = accept(listen_socket, (struct sockaddr *)&sa, &len);
 					FCGI_UNLOCK(req->listen_socket);

@@ -2565,6 +2565,7 @@ PHPAPI int php_execute_script(zend_file_handle *primary_file)
 		   the `start_lineno` will be used by prepend file but not primary file,
 		   save it and restore after prepend file been executed.
 		 */
+		//zend 引擎执行文件
 		if (CG(start_lineno) && prepend_file_p) {
 			int orig_start_lineno = CG(start_lineno);
 
@@ -2577,7 +2578,7 @@ PHPAPI int php_execute_script(zend_file_handle *primary_file)
 			retval = (zend_execute_scripts(ZEND_REQUIRE, NULL, 3, prepend_file_p, primary_file, append_file_p) == SUCCESS);
 		}
 	} zend_end_try();
-
+	//异常处理
 	if (EG(exception)) {
 		zend_try {
 			zend_exception_error(EG(exception), E_ERROR);
